@@ -1,0 +1,7 @@
+---
+- name: install jenkins
+  hosts: jenkins
+  user: root
+  roles:
+    - proxy
+    - java
