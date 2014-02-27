@@ -1,0 +1,22 @@
+---
+- name: install jenkins.repo
+  yum: name=http://pkg.jenkins-ci.org/redhat/jenkins-1.552-1.1.noarch.rpm state=present
+
+- name: install jenkins
+  yum: name={{ item }} state=installed
+  with_items:
+    - jenkins
+
+- name: set JENKINS_USER to {{ JENKINS_USER }}
+  lineinfile: dest=/etc/sysconfig/jenkins regexp="^JENKINS_USER" line="JENKINS_USER={{ JENKINS_USER }}"
+
+- name: set JENKINS_PORT to {{ JENKINS_PORT }}
+  lineinfile: dest=/etc/sysconfig/jenkins regexp="^JENKINS_PORT" line="JENKINS_PORT={{ JENKINS_PORT }}"
+
+- name: insert iptables rule
+  lineinfile: dest=/etc/sysconfig/iptables state=present regexp="{{ JENKINS_PORT }}" insertafter="^:OUTPUT "
+              line="-A INPUT -m state --state NEW -m tcp -p tcp --dport {{ JENKINS_PORT }} -j ACCEPT"
+  notify: restart iptables
+
+- name: restart jenkins
+  service: name=jenkins state=restarted enabled=yes
