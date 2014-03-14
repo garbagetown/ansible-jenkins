@@ -4,6 +4,6 @@
   user: root
   roles:
     - proxy
-    - java
     - git
+    - java
     - jenkins
