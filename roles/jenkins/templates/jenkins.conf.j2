@@ -1,0 +1,7 @@
+<VirtualHost *:80>
+  DocumentRoot "/var/lib/jenkins"
+  ProxyRequests Off
+  ProxyPreserveHost on
+  ProxyPass / http://127.0.0.1:{{ JENKINS_PORT }}/
+  ProxyPassReverse / http://127.0.0.1:{{ JENKINS_PORT }}/
+</VirtualHost>

@@ -1,6 +1,15 @@
 ---
-- name: install jenkins.repo
-  yum: name=http://pkg.jenkins-ci.org/redhat/jenkins-1.552-1.1.noarch.rpm state=present
+- name: install wget
+  yum: name={{ item }} state=installed
+  with_items:
+    - wget
+
+- name: add repository
+  command: wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat/jenkins.repo
+           creates=/etc/yum.repos.d/jenkins.repo
+
+- name: import key
+  rpm_key: key=http://pkg.jenkins-ci.org/redhat/jenkins-ci.org.key state=present
 
 - name: install jenkins
   yum: name={{ item }} state=installed
@@ -12,11 +21,9 @@
 
 - name: set JENKINS_PORT to {{ JENKINS_PORT }}
   lineinfile: dest=/etc/sysconfig/jenkins regexp="^JENKINS_PORT" line="JENKINS_PORT={{ JENKINS_PORT }}"
+  notify: start jenkins
 
-- name: insert iptables rule
-  lineinfile: dest=/etc/sysconfig/iptables state=present regexp="{{ JENKINS_PORT }}" insertafter="^:OUTPUT "
-              line="-A INPUT -m state --state NEW -m tcp -p tcp --dport {{ JENKINS_PORT }} -j ACCEPT"
-  notify: restart iptables
-
-- name: restart jenkins
-  service: name=jenkins state=restarted enabled=yes
+- name: add proxy setting to apache
+  template: src=jenkins.conf.j2 dest=/etc/httpd/conf.d/jenkins.conf
+            owner=apache group=apache mode=0644
+  notify: restart httpd
