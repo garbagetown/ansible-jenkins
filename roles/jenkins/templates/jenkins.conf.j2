@@ -2,6 +2,7 @@
   DocumentRoot "/var/lib/jenkins"
   ProxyRequests Off
   ProxyPreserveHost on
-  ProxyPass / http://127.0.0.1:{{ JENKINS_PORT }}/
+  ProxyPass / http://127.0.0.1:{{ JENKINS_PORT }}/ nocanon
   ProxyPassReverse / http://127.0.0.1:{{ JENKINS_PORT }}/
+  AllowEncodedSlashes On
 </VirtualHost>
