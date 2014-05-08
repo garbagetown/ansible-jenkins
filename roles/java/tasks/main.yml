@@ -3,3 +3,9 @@
   yum: name={{ item }} state=installed
   with_items:
     - java-1.7.0-openjdk-devel
+
+- name: set JAVA_HOME environment variable
+  lineinfile: dest=/etc/profile
+              regexp='^export\sJAVA_HOME=.*$'
+              line='export JAVA_HOME=/etc/alternatives/java_sdk/'
+              insertafter="^export"
