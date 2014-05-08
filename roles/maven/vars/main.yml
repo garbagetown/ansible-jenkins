@@ -1,0 +1,4 @@
+DOWNLOAD_DIR: /usr/local/apachc-maven
+MAVEN_VERSION: 3.2.1
+MAVEN_ARCHIVE: apache-maven-{{ MAVEN_VERSION }}-bin.tar.gz
+EXTRACTED_DIR: apache-maven-{{ MAVEN_VERSION }}

@@ -5,6 +5,7 @@
   roles:
     - proxy
     - java
+    - maven
     - apache
     - jenkins
     - git

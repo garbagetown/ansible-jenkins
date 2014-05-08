@@ -1,0 +1,28 @@
+---
+- name: craete directory
+  file: path={{ DOWNLOAD_DIR }} state=directory
+
+- name: download archive
+  get_url: url=http://ftp.yz.yamagata-u.ac.jp/pub/network/apache/maven/maven-3/{{ MAVEN_VERSION }}/binaries/{{ MAVEN_ARCHIVE }}
+           dest={{ DOWNLOAD_DIR }}/{{ MAVEN_ARCHIVE }}
+
+- name: extract archive
+  command: tar zxf {{ DOWNLOAD_DIR }}/{{ MAVEN_ARCHIVE }} chdir={{ DOWNLOAD_DIR }}
+
+- name: set M2_HOME environment variable
+  lineinfile: dest=/etc/profile
+              regexp='^export\sM2_HOME=.*$'
+              line='export M2_HOME={{ DOWNLOAD_DIR }}/{{ EXTRACTED_DIR }}'
+              insertafter="^export"
+
+- name: set M2 environment variable
+  lineinfile: dest=/etc/profile
+              regexp='^export\sM2=.*$'
+              line='export M2=$M2_HOME/bin'
+              insertafter="^export"
+
+- name: add M2 variable to PATH
+  lineinfile: dest=/etc/profile
+              regexp='^export\sPATH=.*$'
+              line='export PATH=$M2:$PATH'
+              insertafter="^export"
