@@ -16,6 +16,12 @@
   with_items:
     - jenkins
 
+- name: add {{ JENKINS_USER }} to root group
+  command: gpasswd -a {{ JENKINS_USER }} root
+
+- name: add the read right of /etc/shadow to root group
+  command: chmod g+r /etc/shadow
+
 - name: set JENKINS_USER to {{ JENKINS_USER }}
   lineinfile: dest=/etc/sysconfig/jenkins regexp="^JENKINS_USER" line="JENKINS_USER={{ JENKINS_USER }}"
 
